@@ -9,7 +9,7 @@ public class PageModel<T> {    //t表示泛型
 	private int total;    //总页数
 	private List<T> data;  //数据集
 	
-	public static final int ROWS = 2; //显示行数的常量
+	public static final int ROWS = 10; //显示行数的常量
 
 	public int getCurrent() {
 		return current;
