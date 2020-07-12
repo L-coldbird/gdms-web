@@ -9,7 +9,8 @@ public class PageModel<T> {    //t表示泛型
 	private int total;    //总页数
 	private List<T> data;  //数据集
 	
-	public static final int ROWS = 10; //显示行数的常量
+	public static final int ROWS = 1; //显示行数的常量
+	public static final int MAXCOUNT = 5 ; //页码导航个数 
 
 	public int getCurrent() {
 		return current;
@@ -34,7 +35,26 @@ public class PageModel<T> {    //t表示泛型
 	public void setData(List<T> data) {
 		this.data = data;
 	}
-	
+	public String getNav() {
+		StringBuilder sb = new StringBuilder();
+		int a = current - MAXCOUNT/2;
+		a = a < 1 ? 1:a;
+		int b = current + MAXCOUNT/2;
+		b= b <  MAXCOUNT ? MAXCOUNT : b;
+		b = b > total ? total:b;
+		a = a - (MAXCOUNT - ( b- a ) - 1);
+		a = a < 1 ? 1: a;
+	   for( int i = a; i <= b; i++) {
+		   if( i == current) {
+			   sb.append("<span class='current'>" + i + "</span>");
+		   }else {
+			   sb.append("<a href= 'admin/goods/list.php?pn=" + i +"'>" + i + "</a>");
+			   
+		   }
+		   
+	   } 
+		return sb.toString();
+	}
 	
 	
 }

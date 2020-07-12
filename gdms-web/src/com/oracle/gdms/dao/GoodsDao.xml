@@ -21,4 +21,7 @@
 	<select id="findCount" resultType="int">
 	SELECT Count(*) FROM tbl_gdms_goods
 	</select>
+	<select id="findById" resultType="Goods" parameterType="int">
+	SELECT * FROM tbl_gdms_goods WHERE goodsid = #{goodsid}
+	</select>
 </mapper>

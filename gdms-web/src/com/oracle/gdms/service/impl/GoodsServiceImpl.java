@@ -3,6 +3,7 @@ package com.oracle.gdms.service.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONObject;
 import com.oracle.gdms.dao.GoodsDao;
 import com.oracle.gdms.entity.GoodsModel;
 import com.oracle.gdms.entity.PageModel;
@@ -47,4 +48,31 @@ public class GoodsServiceImpl extends BaseService implements GoodsService {
 			 System.out.println("类别是" + m.getType().getName());
 		 }
 	}*/
+
+	@Override
+	public String pushGoods(int goodsid) {
+		try {
+			session = GDMSUtil.getSession();
+			GoodsDao dao = session.getMapper(GoodsDao.class);
+			GoodsModel goods = dao.findById(goodsid);
+			JSONObject json = new JSONObject();
+			json.put("goods", goods);
+			String jsonstr = json.toJSONString();
+			push(jsonstr);  //执行推送
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			free();
+		}
+		return "";
+		
+
+	}
+
+	private void push(String jsonstr) {
+		
+		
+	}
 }

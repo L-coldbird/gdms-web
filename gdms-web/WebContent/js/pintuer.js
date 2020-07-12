@@ -19,6 +19,22 @@ function qipao(msg,$obj){
 		d.close().remove()
 	},1500);
 }
+function queren(msg,$tr){
+	var d = dialog({
+		title :"删除",
+		content : msg,
+		ok  :function(){
+			console.log("nb");
+			$tr.remove();
+		},
+		cancel: function(){
+			console.log("怂了？");
+			d.close().remove();
+		}
+	});
+	d.showModal().width(400);
+}
+
 $(function(){
 
 	$(document).click(function(){
