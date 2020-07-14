@@ -1,9 +1,6 @@
 package com.oracle.gdms.service.impl;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,11 +15,13 @@ import org.apache.http.util.EntityUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.oracle.gdms.dao.GoodsDao;
+import com.oracle.gdms.entity.GoodsEntity;
 import com.oracle.gdms.entity.GoodsModel;
 import com.oracle.gdms.entity.PageModel;
 import com.oracle.gdms.entity.ResponseEntity;
 import com.oracle.gdms.service.GoodsService;
 import com.oracle.gdms.util.GDMSUtil;
+import com.oracle.gdms.web.listener.AppListener;
 
 public class GoodsServiceImpl extends BaseService implements GoodsService {
 
@@ -72,21 +71,26 @@ public class GoodsServiceImpl extends BaseService implements GoodsService {
 			JSONObject json = new JSONObject();
 			json.put("goods", goods);
 			String jsonstr = json.toJSONString();
-			push(jsonstr);  //执行推送
-		} 
+			ResponseEntity result =  push(jsonstr);  //执行推送
+			if( result !=null && result.getCode() == 0) {
+				dao.updatePush(goodsid);     //如果推送成功就更新push表为已推送
+			    session.commit();
+			}
+			return result.getMessage();
+		}   
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 		finally {
 			free();
 		}
-		return "";
+		return "推送失败";
 		
 
 	}
 
-	private void push(String jsonstr) {
-		String url = "http://172.19.133.26:8080/gdms-web/rest/goods/push";
+	private ResponseEntity push(String jsonstr) {
+		String url = AppListener.getString("pushurl");
 		
 		HttpPost post = new HttpPost(url);
 		StringEntity entity = new StringEntity(jsonstr,"UTF-8") ;
@@ -101,11 +105,31 @@ public class GoodsServiceImpl extends BaseService implements GoodsService {
 			String str = EntityUtils.toString(resent);
 			
 			ResponseEntity re = JSONObject.parseObject(str,ResponseEntity.class);
-			System.out.println("code=" +re.getCode() + "msg=" +re.getMessage());
+//			System.out.println("code=" +re.getCode() + "msg=" +re.getMessage());
+			return re;
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return null;
+	}
+
+	@Override
+	public int add(GoodsEntity goods) {
+		try {
+		session = GDMSUtil.getSession();
+		GoodsDao dao = session.getMapper(GoodsDao.class);
+		int c = dao.add(goods);
+		session.commit();
+		return  c;
+	} 
+	catch (Exception e) {
+		e.printStackTrace();
+	}
+	finally {
+		free();
+	}
+		return 0;
 	}
 }

@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
-<base href="http://localhost:8080/gdms-web/" >
+<base href="${ href }" >
 <title>后台管理</title>
 <link rel="stylesheet" href="css/pintuer.css">
 <link rel="stylesheet" href="css/admin.css">
@@ -90,7 +90,7 @@
                               已推送
           </c:if>
           <c:if test="${ !o.push}">
-            <a class="button border-main" href="javascript:void(0)" onclick="doPush(${o.goodsid})">
+            <a class="button border-main" href="javascript:void(0)" onclick="doPush(${o.goodsid},this)">
 			<span class="icon-tint"></span> 推送</a>
           </c:if>
           </td>
@@ -173,18 +173,17 @@
 
 
 
-function doPush(goodsid){
+function doPush(goodsid,a){
 	$.ajax({
 		url : "admin/goods/push.php",
 		type:"POST",
 		data: {"goodsid" :goodsid},
 		success : function(result){
 		    var json = eval(result);
-			if(json.data.code != 0 ){
-				qipao(json.data.message);
-			}else{
-				qipao("推送成功!");
-			}
+		    if(json.data.code ==0 ){
+		    	$(a).parent().text("已推送");  //页面的按钮改成已推送
+		    }
+			qipao(json.data.message);
 		}
 		
 	});	

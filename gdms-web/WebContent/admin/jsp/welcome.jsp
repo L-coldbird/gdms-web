@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="f" %>
 
 <jsp:useBean id="date" class="java.util.Date" scope="page"/>
-
+<base href="${ href }" >
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>

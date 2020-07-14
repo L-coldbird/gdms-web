@@ -46,6 +46,25 @@ public class UserServiceImpl extends BaseService implements UserService {
 		return null;
 
 }
+
+	@Override
+	public boolean hasMobile(String mobile) {
+		try {
+			// TODO 增加一个新用户的业务
+			session = GDMSUtil.getSession(); //获取会话
+			userdao = session.getMapper(UserDao.class);
+			int c = userdao.hasMobile(mobile);
+			return c>0;
+		} catch (Exception ex) {
+		 ex.printStackTrace();
+		 session.rollback(); //回滚事务
+		} 
+		finally {
+           free();     
+		}
+		return false;
+
+  }
 }
 
 
